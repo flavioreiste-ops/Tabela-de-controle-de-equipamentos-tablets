@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Controle de Equipamento</title>
+<link rel="icon" href="https://www.freeiconspng.com/uploads/tablet-icon-2.png" />
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background: rgba(0, 94, 146, 1);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Tela Inicial */
+#tela-inicial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    padding: 60px 40px;
+    border-radius: 10px;
+}
+
+#tela-inicial h2 {
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+#tela-inicial h1 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 36px;
+}
+
+#tela-inicial p {
+    font-size: 16px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.btn {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+#tela-formulario {
+    display: none;
+    text-align: left;
+}
+
+#tela-formulario h1,
+#tela-formulario h3,
+label {
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"], 
+input[type="date"], 
+input[type="time"], 
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.item-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.item-row input[type="text"] {
+    flex: 1;
+}
+
+.remove-row-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.remove-row-btn:hover {
+    background-color: #c82333;
+}
+
+.add-row-btn {
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    display: block;
+    width: fit-content;
+}
+
+.add-row-btn:hover {
+    background-color: #218838;
+}
+
+.save-btn {
+    background: #ffc107;
+    color: #333;
+    font-weight: bold;
+}
+
+.save-btn:hover {
+    background: #e0a800;
+}
+
+#mensagem-sucesso {
+    display: none;
+    background: #d4edda;
+    color: #155724;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+#mensagem-sucesso p {
+    font-size: 18px;
+    margin: 0 0 10px;
+}
+
+.back-to-home-btn {
+    background-color: #6c757d;
+}
+
+.back-to-home-btn:hover {
+    background-color: #5a6268;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="tela-inicial">
+    <h2>Tecnologia Educacional</h2>
+    <h1>Controle de Equipamento</h1>
+    <p>Este é o controle de uso dos tablets. Ele nos ajuda a acompanhar e cuidar melhor dos equipamentos em sala de aula. Por favor, preencha com atenção e da forma mais completa possível.</p>
+    <button id="btn-iniciar" class="btn">Iniciar</button>
+</div>
+
+<div class="container" id="tela-formulario">
+    <h1>Formulário de Controle</h1>
+    
+    <div class="form-group">
+        <label for="data-registro">Data:</label>
+        <input type="date" id="data-registro" required>
+    </div>
+
+    <div class="form-group">
+        <label for="hora-registro">Hora:</label>
+        <input type="time" id="hora-registro" required>
+    </div>
+
+    <div class="form-group">
+        <label for="nome-educador">Nome do Educador:</label>
+        <input type="text" id="nome-educador" required>
+    </div>
+
+    <div class="form-group">
+        <label for="turma">Turma:</label>
+        <select id="turma" required>
+            <option value="">Selecione a Turma</option>
+            <option value="2º Ano - anos iniciais">2º Ano - anos iniciais</option>
+            <option value="3º Ano - anos iniciais">3º Ano - anos iniciais</option>
+            <option value="4º Ano - anos iniciais">4º Ano - anos iniciais</option>
+            <option value="5º Ano - anos iniciais">5º Ano - anos iniciais</option>
+            <option value="6º Ano - anos finais">6º Ano - anos finais</option>
+            <option value="7º Ano - anos finais">7º Ano - anos finais</option>
+            <option value="8º Ano - anos finais">8º Ano - anos finais</option>
+            <option value="9º Ano - anos finais">9º Ano - anos finais</option>
+            <option value="1º Ano - EM">1º Ano - EM</option>
+            <option value="2º Ano - EM">2º Ano - EM</option>
+            <option value="3º Ano - EM">3º Ano - EM</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="letra">Letra:</label>
+        <select id="letra" required>
+            <option value="">Selecione a Letra</option>
+            <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+            <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+            <option value="G">G</option><option value="H">H</option><option value="I">I</option>
+            <option value="J">J</option>
+        </select>
+    </div>
+    
+    <h3>Registro de Itens</h3>
+    <div class="item-headers" style="display:flex; gap: 10px; color: white; font-weight:bold; margin-bottom:10px;">
+        <div style="flex:1;">Aluno</div>
+        <div style="flex:1;">Equipamento</div>
+        <div>Remover</div>
+    </div>
+    
+    <div id="itens-container"></div>
+    
+    <button id="add-row-btn" class="add-row-btn">Adicionar Linha +</button>
+
+    <div class="form-group" style="margin-top: 20px;">
+        <button id="btn-salvar" class="btn save-btn">Salvar em PDF</button>
+        <button id="btn-voltar-form" class="btn back-to-home-btn">Voltar para Início</button>
+    </div>
+    
+    <div id="mensagem-sucesso">
+        <p>Registro realizado com sucesso!</p>
+        <button id="btn-voltar" class="btn back-to-home-btn">Voltar para o Início</button>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const telaInicial = document.getElementById('tela-inicial');
+const telaFormulario = document.getElementById('tela-formulario');
+const btnIniciar = document.getElementById('btn-iniciar');
+const btnSalvar = document.getElementById('btn-salvar');
+const btnVoltar = document.getElementById('btn-voltar');
+const btnVoltarForm = document.getElementById('btn-voltar-form');
+const addRowBtn = document.getElementById('add-row-btn');
+const itensContainer = document.getElementById('itens-container');
+const mensagemSucesso = document.getElementById('mensagem-sucesso');
+
+const MAX_ROWS = 70;
+
+function criarLinha() {
+    if (itensContainer.children.length >= MAX_ROWS) {
+        alert(`O limite de ${MAX_ROWS} linhas foi atingido.`);
+        return;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'item-row';
+    
+    const inputAluno = document.createElement('input');
+    inputAluno.type = 'text';
+    inputAluno.placeholder = 'Digite o nome do aluno';
+    inputAluno.required = true;
+    
+    const inputEquipamento = document.createElement('input');
+    inputEquipamento.type = 'text';
+    inputEquipamento.placeholder = 'Digite o equipamento';
+    inputEquipamento.required = true;
+
+    const btnRemover = document.createElement('button');
+    btnRemover.type = 'button';
+    btnRemover.textContent = 'X';
+    btnRemover.className = 'remove-row-btn';
+    btnRemover.addEventListener('click', () => row.remove());
+
+    row.appendChild(inputAluno);
+    row.appendChild(inputEquipamento);
+    row.appendChild(btnRemover);
+    
+    itensContainer.appendChild(row);
+}
+
+function limparFormulario() {
+    document.getElementById('data-registro').value = '';
+    document.getElementById('hora-registro').value = '';
+    document.getElementById('nome-educador').value = '';
+    document.getElementById('turma').value = '';
+    document.getElementById('letra').value = '';
+    itensContainer.innerHTML = '';
+    criarLinha();
+}
+
+function preencherDataHoraAtual() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    document.getElementById('data-registro').value = `${year}-${month}-${day}`;
+    document.getElementById('hora-registro').value = `${hours}:${minutes}`;
+}
+
+btnIniciar.addEventListener('click', () => {
+    telaInicial.style.display = 'none';
+    telaFormulario.style.display = 'block';
+    mensagemSucesso.style.display = 'none';
+    limparFormulario();
+    preencherDataHoraAtual();
+    criarLinha();
+});
+
+btnVoltar.addEventListener('click', () => {
+    mensagemSucesso.style.display = 'none';
+    telaFormulario.style.display = 'none';
+    telaInicial.style.display = 'flex';
+});
+
+btnVoltarForm.addEventListener('click', () => {
+    telaFormulario.style.display = 'none';
+    telaInicial.style.display = 'flex';
+});
+
+addRowBtn.addEventListener('click', () => {
+    criarLinha();
+});
+
+btnSalvar.addEventListener('click', () => {
+    // Validação simples dos campos
+    const data = document.getElementById('data-registro').value;
+    const hora = document.getElementById('hora-registro').value;
+    const educador = document.getElementById('nome-educador').value.trim();
+    const turma = document.getElementById('turma').value;
+    const letra = document.getElementById('letra').value;
+
+    if (!data || !hora || !educador || !turma || !letra) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+
+    // Validar linhas
+    const linhas = Array.from(itensContainer.children);
+    if (linhas.length === 0) {
+        alert('Adicione pelo menos uma linha de registro.');
+        return;
+    }
+
+    for (const linha of linhas) {
+        const inputs = linha.querySelectorAll('input[type="text"]');
+        if (!inputs[0].value.trim() || !inputs[1].value.trim()) {
+            alert('Por favor, preencha todos os campos das linhas de registro.');
+            return;
+        }
+    }
+
+    // Criar o nome do arquivo baseado na data, hora, turma e letra
+    const nomeArquivo = `Controle_${data.replace(/-/g,'')}_${hora.replace(':','')}_${turma.replace(/\s/g,'')}_${letra}.pdf`;
+
+    if (!confirm(`O arquivo será salvo com o nome:\n${nomeArquivo}\n\nDeseja continuar?`)) {
+        return; // usuário cancelou
+    }
+
+    // Gerar PDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    let y = 10;
+    doc.setFontSize(18);
+    doc.text('Controle de Equipamento', 105, y, null, null, 'center');
+
+    y += 10;
+    doc.setFontSize(12);
+    doc.text(`Data: ${data}`, 10, y);
+    doc.text(`Hora: ${hora}`, 100, y);
+
+    y += 7;
+    doc.text(`Educador: ${educador}`, 10, y);
+    doc.text(`Turma: ${turma}`, 100, y);
+
+    y += 7;
+    doc.text(`Letra: ${letra}`, 10, y);
+
+    y += 10;
+    doc.setFontSize(14);
+    doc.text('Registros:', 10, y);
+
+    y += 7;
+    doc.setFontSize(12);
+
+    // Cabeçalho da tabela
+    doc.text('Aluno', 10, y);
+    doc.text('Equipamento', 100, y);
+    y += 5;
+
+    doc.setDrawColor(0);
+    doc.line(10, y, 200, y);
+    y += 5;
+
+    for (const linha of linhas) {
+        const inputs = linha.querySelectorAll('input[type="text"]');
+        const aluno = inputs[0].value.trim();
+        const equipamento = inputs[1].value.trim();
+
+        doc.text(aluno, 10, y);
+        doc.text(equipamento, 100, y);
+        y += 7;
+
+        // Se passar do limite da página, cria nova página
+        if (y > 280) {
+            doc.addPage();
+            y = 10;
+        }
+    }
+
+    // Salvar PDF
+    doc.save(nomeArquivo);
+
+    // Mostrar mensagem sucesso
+    mensagemSucesso.style.display = 'block';
+    telaFormulario.style.display = 'none';
+});
+
+window.onload = () => {
+    telaInicial.style.display = 'flex';
+    telaFormulario.style.display = 'none';
+    mensagemSucesso.style.display = 'none';
+};
+</script>
+
+</body>
+</html>
