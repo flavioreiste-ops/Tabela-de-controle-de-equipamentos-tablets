@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Controle de Equipamento</title>
-<link rel="icon" href="https://www.freeiconspng.com/uploads/tablet-icon-2.png" />
+<link rel="icon" href="https://www.freeiconspng.com/uploads/tablet-icon-2.png">
 
 <style>
 body {
@@ -111,7 +111,8 @@ select {
     margin-bottom: 10px;
 }
 
-.item-row input[type="text"] {
+.item-row input[type="text"],
+.item-row select {
     flex: 1;
 }
 
@@ -238,10 +239,10 @@ select {
     </div>
     
     <h3>Registro de Itens</h3>
-    <div class="item-headers" style="display:flex; gap: 10px; color: white; font-weight:bold; margin-bottom:10px;">
-        <div style="flex:1;">Aluno</div>
-        <div style="flex:1;">Equipamento</div>
-        <div>Remover</div>
+    <div class="item-headers">
+        <label>Aluno</label>
+        <label>Equipamento</label>
+        <label>Remover</label>
     </div>
     
     <div id="itens-container"></div>
@@ -286,11 +287,22 @@ function criarLinha() {
     inputAluno.type = 'text';
     inputAluno.placeholder = 'Digite o nome do aluno';
     inputAluno.required = true;
-    
-    const inputEquipamento = document.createElement('input');
-    inputEquipamento.type = 'text';
-    inputEquipamento.placeholder = 'Digite o equipamento';
-    inputEquipamento.required = true;
+
+    const selectEquipamento = document.createElement('select');
+    selectEquipamento.required = true;
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Selecione o Equipamento';
+    selectEquipamento.appendChild(defaultOption);
+
+    for (let i = 1; i <= 68; i++) {
+        const option = document.createElement('option');
+        const numero = String(i).padStart(2, '0');
+        option.value = `Equipamento ${numero}`;
+        option.textContent = `Equipamento ${numero}`;
+        selectEquipamento.appendChild(option);
+    }
 
     const btnRemover = document.createElement('button');
     btnRemover.type = 'button';
@@ -299,7 +311,7 @@ function criarLinha() {
     btnRemover.addEventListener('click', () => row.remove());
 
     row.appendChild(inputAluno);
-    row.appendChild(inputEquipamento);
+    row.appendChild(selectEquipamento);
     row.appendChild(btnRemover);
     
     itensContainer.appendChild(row);
@@ -327,131 +339,83 @@ function preencherDataHoraAtual() {
     document.getElementById('hora-registro').value = `${hours}:${minutes}`;
 }
 
+// Eventos
 btnIniciar.addEventListener('click', () => {
     telaInicial.style.display = 'none';
     telaFormulario.style.display = 'block';
-    mensagemSucesso.style.display = 'none';
     limparFormulario();
     preencherDataHoraAtual();
-    criarLinha();
 });
 
-btnVoltar.addEventListener('click', () => {
-    mensagemSucesso.style.display = 'none';
-    telaFormulario.style.display = 'none';
-    telaInicial.style.display = 'flex';
-});
-
-btnVoltarForm.addEventListener('click', () => {
-    telaFormulario.style.display = 'none';
-    telaInicial.style.display = 'flex';
-});
-
-addRowBtn.addEventListener('click', () => {
-    criarLinha();
-});
+addRowBtn.addEventListener('click', criarLinha);
 
 btnSalvar.addEventListener('click', () => {
-    // Validação simples dos campos
-    const data = document.getElementById('data-registro').value;
-    const hora = document.getElementById('hora-registro').value;
-    const educador = document.getElementById('nome-educador').value.trim();
+    const dataRegistro = document.getElementById('data-registro').value;
+    const horaRegistro = document.getElementById('hora-registro').value;
+    const nomeEducador = document.getElementById('nome-educador').value;
     const turma = document.getElementById('turma').value;
     const letra = document.getElementById('letra').value;
 
-    if (!data || !hora || !educador || !turma || !letra) {
+    if (!dataRegistro || !horaRegistro || !nomeEducador || !turma || !letra) {
         alert('Por favor, preencha todos os campos obrigatórios.');
         return;
     }
 
-    // Validar linhas
-    const linhas = Array.from(itensContainer.children);
-    if (linhas.length === 0) {
-        alert('Adicione pelo menos uma linha de registro.');
-        return;
-    }
-
-    for (const linha of linhas) {
-        const inputs = linha.querySelectorAll('input[type="text"]');
-        if (!inputs[0].value.trim() || !inputs[1].value.trim()) {
-            alert('Por favor, preencha todos os campos das linhas de registro.');
+    const linhas = [];
+    const rows = itensContainer.querySelectorAll('.item-row');
+    for (let row of rows) {
+        const aluno = row.querySelector('input[type="text"]').value;
+        const equipamento = row.querySelector('select').value;
+        if (!aluno || !equipamento) {
+            alert('Preencha todos os campos de aluno e equipamento.');
             return;
         }
+        linhas.push({ aluno, equipamento });
     }
 
-    // Criar o nome do arquivo baseado na data, hora, turma e letra
-    const nomeArquivo = `Controle_${data.replace(/-/g,'')}_${hora.replace(':','')}_${turma.replace(/\s/g,'')}_${letra}.pdf`;
-
-    if (!confirm(`O arquivo será salvo com o nome:\n${nomeArquivo}\n\nDeseja continuar?`)) {
-        return; // usuário cancelou
-    }
-
-    // Gerar PDF
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    let y = 10;
     doc.setFontSize(18);
-    doc.text('Controle de Equipamento', 105, y, null, null, 'center');
-
-    y += 10;
+    doc.text('Relatório de Controle de Equipamento', 14, 20);
     doc.setFontSize(12);
-    doc.text(`Data: ${data}`, 10, y);
-    doc.text(`Hora: ${hora}`, 100, y);
+    doc.text(`Data: ${dataRegistro}`, 14, 35);
+    doc.text(`Hora: ${horaRegistro}`, 14, 45);
+    doc.text(`Educador: ${nomeEducador}`, 14, 55);
+    doc.text(`Turma: ${turma}`, 14, 65);
+    doc.text(`Letra: ${letra}`, 14, 75);
 
-    y += 7;
-    doc.text(`Educador: ${educador}`, 10, y);
-    doc.text(`Turma: ${turma}`, 100, y);
-
-    y += 7;
-    doc.text(`Letra: ${letra}`, 10, y);
-
-    y += 10;
-    doc.setFontSize(14);
-    doc.text('Registros:', 10, y);
-
-    y += 7;
-    doc.setFontSize(12);
-
-    // Cabeçalho da tabela
-    doc.text('Aluno', 10, y);
-    doc.text('Equipamento', 100, y);
-    y += 5;
-
-    doc.setDrawColor(0);
-    doc.line(10, y, 200, y);
-    y += 5;
-
-    for (const linha of linhas) {
-        const inputs = linha.querySelectorAll('input[type="text"]');
-        const aluno = inputs[0].value.trim();
-        const equipamento = inputs[1].value.trim();
-
-        doc.text(aluno, 10, y);
-        doc.text(equipamento, 100, y);
-        y += 7;
-
-        // Se passar do limite da página, cria nova página
+    doc.text('Aluno | Equipamento', 14, 90);
+    let y = 100;
+    linhas.forEach(item => {
+        doc.text(`${item.aluno} | ${item.equipamento}`, 14, y);
+        y += 10;
         if (y > 280) {
             doc.addPage();
-            y = 10;
+            y = 20;
         }
+    });
+
+    const nomeArquivo = prompt("Digite o nome do arquivo para salvar:", "controle-tablets");
+    if (nomeArquivo) {
+        doc.save(`${nomeArquivo}.pdf`);
+        telaFormulario.style.display = 'none';
+        mensagemSucesso.style.display = 'block';
     }
-
-    // Salvar PDF
-    doc.save(nomeArquivo);
-
-    // Mostrar mensagem sucesso
-    mensagemSucesso.style.display = 'block';
-    telaFormulario.style.display = 'none';
 });
 
-window.onload = () => {
-    telaInicial.style.display = 'flex';
-    telaFormulario.style.display = 'none';
+btnVoltar.addEventListener('click', () => {
     mensagemSucesso.style.display = 'none';
-};
-</script>
+    telaInicial.style.display = 'block';
+    limparFormulario();
+});
 
+btnVoltarForm.addEventListener('click', () => {
+    telaFormulario.style.display = 'none';
+    telaInicial.style.display = 'block';
+});
+
+document.addEventListener('DOMContentLoaded', () => criarLinha());
+</script>
 </body>
 </html>
